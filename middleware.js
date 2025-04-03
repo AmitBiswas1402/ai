@@ -1,12 +1,18 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server"; // Ensure NextResponse is imported
 
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "/resume(.*)",
-  "/interview(.*)",
-  "/ai-cover-letter(.*)",
-  "/onboarding(.*)",
-]);
+// Custom function to match protected routes
+const isProtectedRoute = (req) => {
+  const protectedRoutes = [
+    "/dashboard",
+    "/resume",
+    "/interview",
+    "/ai-cover-letter",
+    "/onboarding",
+  ];
+  const url = new URL(req.url);
+  return protectedRoutes.some((route) => url.pathname.startsWith(route));
+};
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
